@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/gradientinis.dir/main.cpp.o  -o gradientinis -lmgl 
