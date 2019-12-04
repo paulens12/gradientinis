@@ -77,7 +77,7 @@ int sample(mglGraph *gr, double step)
     gr->SetTicks('x', 1);
     gr->SetTicks('y', 1);
     gr->SetTicks('z', 1);
-    gr->Rotate(50,60);
+    gr->Rotate(50,30);
     gr->Axis();
     int steps = ceil(1.0 / step);
 
@@ -125,12 +125,12 @@ int main() {
     gr.SetRange('x', 0, 1);
     gr.SetRange('y', 0, 1);
     gr.SetRange('z', ZMIN, ZMAX);
-    gr.SetRange('c', ZMIN - 0.001, 0.001);
-    gr.SetSize(2400, 1000);
+    // gr.SetRange('c', ZMIN - 0.001, 0.001);
+    gr.SetSize(1000, 400);
     std::cout << "GRADIENTINIS NUSILEIDIMAS" << std::endl << std::endl;
 
     gr.SubPlot(3, 1, 0, "");
-    gr.Title("(0, 0)");
+    gr.Title("(0, 0, 0)");
     sample(&gr, 0.001);
     mglPoint ats = gradientinis(0, 0, 0, 100, 0.00001, 2, pointsWithDs);
     std::cout << std::endl << "taskas (0, 0): ats (" << ats.x << ", " << ats.y << ")" << std::endl;
@@ -138,7 +138,7 @@ int main() {
     pointsWithDs.clear();
 
     gr.SubPlot(3, 1, 1, "");
-    gr.Title("(1, 1)");
+    gr.Title("(1, 1, 1)");
     sample(&gr, 0.001);
     ats = gradientinis(1, 1, 1, 100, 0.00001, 2, pointsWithDs);
     std::cout << std::endl << "taskas (1, 1): ats (" << ats.x << ", " << ats.y << ")" << std::endl;
@@ -146,7 +146,7 @@ int main() {
     pointsWithDs.clear();
 
     gr.SubPlot(3, 1, 2, "");
-    gr.Title("(0, 0.8)");
+    gr.Title("(0.6, 0, 0.8)");
     sample(&gr, 0.001);
     ats = gradientinis(0.6, 0, 0.8, 100, 0.00001, 2, pointsWithDs);
     std::cout << std::endl << "taskas (0, 0.8): ats (" << ats.x << ", " << ats.y << ")" << std::endl;
