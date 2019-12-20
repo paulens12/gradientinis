@@ -14,7 +14,7 @@ clc
     pointsListZ = [Z];
     ListSize = 1;
     e = 1/10000;
-    while (Gi(Xi11,Xi22,Xi33) ~= 1) %a > e && b > e && c > e%(Gi(Xi11,Xi22,Xi33) ~= 1)
+    while (abs(X+Y+Z - 1) > 0.005) %a > e && b > e && c > e%(Gi(Xi11,Xi22,Xi33) ~= 1)
         gi = Gi(X,Y,Z);
         Xi1 = Xi11 - ydaug * GradX(Xi11,Xi22,Xi33,r);
         Xi2 = Xi22 - ydaug * GradY(Xi11,Xi22,Xi33,r);
@@ -64,10 +64,10 @@ clc
     plot3(pointsListX,pointsListY,pointsListZ,'o',Xte,Yte,Zte,'.');
     a = Xi11;
     b = Xi22;
-    fprintf('iteracijø skaièius: %d\n',iter);
-    fprintf('funkcijø skaièiavimø skaièius: %d\n',ifun);
+    fprintf('iteracijï¿½ skaiï¿½ius: %d\n',iter);
+    fprintf('funkcijï¿½ skaiï¿½iavimï¿½ skaiï¿½ius: %d\n',ifun);
     fprintf('Gauti sprendiniai: %12.14f %12.14f %12.14f\n',Xi11,Xi22,Xi33);
-    fprintf('Funkcijos minimumo ávertis: %12.14f',Function(Xi11,Xi22,Xi33));
+    fprintf('Funkcijos minimumo ï¿½vertis: %12.14f',Function(Xi11,Xi22,Xi33));
 end
 
 function x = GradX(X,Y,Z,r)
@@ -92,10 +92,9 @@ function z = BaudFunction(X,Y,Z,r)
 end
 
 function g = Gi(X,Y,Z)
-
-if abs(X+Y+Z - 1)<0.005
-    g = 1;
-elseif X+Y+Z ~= 1
-    g = 0; 
-end
+  if abs(X+Y+Z - 1)<0.005
+      g = 1;
+  elseif X+Y+Z ~= 1
+      g = 0; 
+  end
 end

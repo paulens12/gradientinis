@@ -2,8 +2,8 @@
 #include <mgl2/mgl.h>
 #include <tuple>
 
-#define ZMIN (-0.005)
-#define ZMAX 0.125
+#define ZMIN (-1)
+#define ZMAX 1
 
 struct triangle
 {
@@ -56,19 +56,23 @@ mglPoint gradientinis(double x0, double y0, double z0, double r, double e, doubl
 {
     double stp;
     double x=x0, y=y0, z=z0;
+    double r1 = r;
+    double dx = 0;
     do
     {
-        double dx = dfndx(x, y, z, r);
-        double dy = dfndy(x, y, z, r);
-        double dz = dfndz(x, y, z, r);
-        points.emplace_back(std::pair<mglPoint, mglPoint>(mglPoint(x, y, ZMAX), mglPoint(dx, dy)));
+        dx = dfndx(x, y, z, r1);
+        double dy = dfndy(x, y, z, r1);
+        double dz = dfndz(x, y, z, r1);
+        points.emplace_back(std::pair<mglPoint, mglPoint>(mglPoint(x, y, z), mglPoint(dx, dy, dz)));
         x -= g * dx;
         y -= g * dy;
         z -= g * dz;
-        stp = sqrt(dx*dx+dy*dy+dz*dz);
-    } while(stp > e);
+        stp = sqrt(dx*dx+dy*dy+dz*dz) * g;
+        // std::cout << stp << std::endl;
+        r1 *= 0.95;
+    } while(abs(g * dx) > e);
 
-    return mglPoint(x, y, ZMAX);
+    return mglPoint(x, y, z);
 }
 
 int sample(mglGraph *gr, double step)
@@ -102,7 +106,7 @@ int sample(mglGraph *gr, double step)
     }
 
     gr->Surf(xd, yd, zd);
-    std::cout << min << std::endl;
+    // std::cout << min << std::endl;
     return 0;
 }
 
@@ -111,8 +115,8 @@ void printpoints(const std::vector<std::pair<mglPoint, mglPoint> >& points, mglG
     for(auto & point : points)
     {
         gr.Mark(point.first, "bk");
-        std::cout << point.first.x << '\t' << point.first.y << '\t'
-                  << point.second.x << '\t' << point.second.y << std::endl;
+        std::cout << point.first.x << '\t' << point.first.y << '\t' << point.first.z << '\t'
+                  << point.second.x << '\t' << point.second.y << '\t' << point.second.z << std::endl;
     }
 }
 
@@ -126,30 +130,30 @@ int main() {
     gr.SetRange('y', 0, 1);
     gr.SetRange('z', ZMIN, ZMAX);
     // gr.SetRange('c', ZMIN - 0.001, 0.001);
-    gr.SetSize(1000, 400);
+    gr.SetSize(5000, 2000);
     std::cout << "GRADIENTINIS NUSILEIDIMAS" << std::endl << std::endl;
 
-    gr.SubPlot(3, 1, 0, "");
+    gr.SubPlot(7, 3, 8, "");
     gr.Title("(0, 0, 0)");
     sample(&gr, 0.001);
-    mglPoint ats = gradientinis(0, 0, 0, 100, 0.00001, 2, pointsWithDs);
-    std::cout << std::endl << "taskas (0, 0): ats (" << ats.x << ", " << ats.y << ")" << std::endl;
+    mglPoint ats = gradientinis(0, 0, 0, 20, 0.00001, 0.01, pointsWithDs);
+    std::cout << std::endl << "taskas (0, 0, 0): ats (" << ats.x << ", " << ats.y << ", " << ats.z << ")" << std::endl;
     printpoints(pointsWithDs, gr);
     pointsWithDs.clear();
 
-    gr.SubPlot(3, 1, 1, "");
+    gr.SubPlot(7, 3, 10, "");
     gr.Title("(1, 1, 1)");
     sample(&gr, 0.001);
-    ats = gradientinis(1, 1, 1, 100, 0.00001, 2, pointsWithDs);
-    std::cout << std::endl << "taskas (1, 1): ats (" << ats.x << ", " << ats.y << ")" << std::endl;
+    ats = gradientinis(1, 1, 1, 20, 0.00001, 0.01, pointsWithDs);
+    std::cout << std::endl << "taskas (1, 1, 1): ats (" << ats.x << ", " << ats.y << ", " << ats.z << ")" << std::endl;
     printpoints(pointsWithDs, gr);
     pointsWithDs.clear();
 
-    gr.SubPlot(3, 1, 2, "");
+    gr.SubPlot(7, 3, 12, "");
     gr.Title("(0.6, 0, 0.8)");
     sample(&gr, 0.001);
-    ats = gradientinis(0.6, 0, 0.8, 100, 0.00001, 2, pointsWithDs);
-    std::cout << std::endl << "taskas (0, 0.8): ats (" << ats.x << ", " << ats.y << ")" << std::endl;
+    ats = gradientinis(0.6, 0, 0.8, 10, 0.00001, 0.05, pointsWithDs);
+    std::cout << std::endl << "taskas (0.6, 0, 0.8): ats (" << ats.x << ", " << ats.y << ", " << ats.z << ")" << std::endl;
     printpoints(pointsWithDs, gr);
     pointsWithDs.clear();
 
